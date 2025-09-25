@@ -1,0 +1,6 @@
+mcp
+httpx
+pydantic
+structlog
+orjson
+ulid-py
