@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import asyncio
-from contextlib import asynccontextmanager
 
 import structlog
+from dotenv import load_dotenv
 from mcp import server as mcp_server
 from mcp.server import stdio
-from dotenv import load_dotenv
 
 from .backend import BackendClient, BackendError
 from .config import Settings, SettingsError
@@ -20,10 +19,7 @@ SERVER_NAME = "qbaf-mcp"
 SERVER_VERSION = "0.1.0"
 
 
-@asynccontextmanager
-async def _lifespan(app: mcp_server.Server):
-    """Initialize configuration, logging, backend client, and tools."""
-
+async def _run_server() -> None:
     load_dotenv()
 
     try:
@@ -42,24 +38,19 @@ async def _lifespan(app: mcp_server.Server):
     except BackendHealthError as exc:
         log.error("backend_health_failed", error=str(exc))
         await http_client.aclose()
-        raise SystemExit(f"backend health check failed: {exc}")
+        raise SystemExit(f"backend health check failed: {exc}") from exc
 
+    app = mcp_server.Server(name=SERVER_NAME, version=SERVER_VERSION)
     register_tools(app, backend)
+    initialization_options = app.create_initialization_options()
     log.info("server_startup_complete", backend_base_url=str(settings.backend_base_url))
 
     try:
-        yield
+        async with stdio.stdio_server() as (read_stream, write_stream):
+            await app.run(read_stream, write_stream, initialization_options, raise_exceptions=False)
     finally:
         await http_client.aclose()
         log.info("server_shutdown")
-
-
-async def _run_server():
-    app = mcp_server.Server(name=SERVER_NAME, version=SERVER_VERSION, lifespan=_lifespan)
-    initialization_options = app.create_initialization_options()
-
-    async with stdio.stdio_server() as (read_stream, write_stream):
-        await app.run(read_stream, write_stream, initialization_options, raise_exceptions=False)
 
 
 def main() -> None:

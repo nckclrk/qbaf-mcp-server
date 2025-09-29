@@ -131,7 +131,7 @@ def register(server_app: server.Server, backend: BackendProtocol) -> None:
                 merged_defs.update(local_defs)
                 output_one_of.append(schema)
 
-            output_schema: Dict[str, object] = {"oneOf": output_one_of}
+            output_schema: Dict[str, object] = {"type": "object", "oneOf": output_one_of}
             if merged_defs:
                 output_schema["$defs"] = merged_defs
 
