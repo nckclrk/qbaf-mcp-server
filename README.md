@@ -31,7 +31,7 @@ Runtime settings are loaded from a `.env` file automatically if it exists in the
 
 ```
 GRAPH_ID=your-graph-id
-BACKEND_BASE_URL=https://backend.example.com
+BACKEND_BASE_URL=http://127.0.0.1:8000
 # Optional overrides
 BACKEND_API_KEY=
 TIMEOUT_SECONDS=10
@@ -39,3 +39,18 @@ LOG_LEVEL=INFO
 ```
 
 To override a value temporarily, set the environment variable in your shell; explicit environment variables still take precedence over the `.env` file.
+
+## Local Backend (Optional)
+
+For manual testing without a live QBAF deployment, run the built-in Starlette backend:
+
+```bash
+source .venv/bin/activate
+uvicorn qbaf_mcp_server.dev_backend:app --reload
+```
+
+Point `BACKEND_BASE_URL` at the running service (default `http://127.0.0.1:8000`). Once the backend is up you can launch the MCP server through Inspector:
+
+```bash
+npx @modelcontextprotocol/inspector python --directory . run python -m qbaf_mcp_server.server
+```
