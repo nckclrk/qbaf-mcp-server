@@ -4,3 +4,4 @@ pydantic
 structlog
 orjson
 ulid-py
+python-dotenv

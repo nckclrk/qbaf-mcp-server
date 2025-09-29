@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 import structlog
 from mcp import server as mcp_server
 from mcp.server import stdio
+from dotenv import load_dotenv
 
 from .backend import BackendClient, BackendError
 from .config import Settings, SettingsError
@@ -22,6 +23,8 @@ SERVER_VERSION = "0.1.0"
 @asynccontextmanager
 async def _lifespan(app: mcp_server.Server):
     """Initialize configuration, logging, backend client, and tools."""
+
+    load_dotenv()
 
     try:
         settings = Settings.from_environment()
