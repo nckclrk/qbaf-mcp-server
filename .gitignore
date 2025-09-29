@@ -25,3 +25,6 @@ htmlcov/
 
 # Local environment configuration
 .env
+
+# Neo4j
+.neo4j/

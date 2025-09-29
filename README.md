@@ -36,6 +36,10 @@ BACKEND_BASE_URL=http://127.0.0.1:8000
 BACKEND_API_KEY=
 TIMEOUT_SECONDS=10
 LOG_LEVEL=INFO
+# Neo4j-backed service
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USERNAME=neo4j
+NEO4J_PASSWORD=password
 ```
 
 To override a value temporarily, set the environment variable in your shell; explicit environment variables still take precedence over the `.env` file.
@@ -54,3 +58,19 @@ Point `BACKEND_BASE_URL` at the running service (default `http://127.0.0.1:8000`
 ```bash
 npx @modelcontextprotocol/inspector python --directory . run python -m qbaf_mcp_server.server
 ```
+
+## Neo4j Backend Service
+
+To run the persistent backend:
+
+1. Start Neo4j locally (or point to an external instance):
+   ```bash
+   ./scripts/start_neo4j.sh
+   ```
+   Set `USE_EXTERNAL_NEO4J=bolt://host:7687` to skip the local container.
+2. Populate `.env` with the Neo4j credentials (`NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`).
+3. Launch the backend API (from an activated venv):
+   ```bash
+   PYTHONPATH=src uvicorn qbaf_backend.service:create_app --factory --reload
+   ```
+   The service listens on `http://127.0.0.1:8000` by default and mirrors the endpoints consumed by the MCP server.

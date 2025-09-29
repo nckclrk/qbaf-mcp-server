@@ -8,6 +8,8 @@
 - `qbaf_mcp_server.server`: loads `.env`, bootstraps stdio transport, registers tools.
 - `qbaf_mcp_server.backend`: async proxy to the configured HTTP backend.
 - `qbaf_mcp_server.dev_backend`: Starlette app for local testing (`uvicorn qbaf_mcp_server.dev_backend:app`).
+- `qbaf_backend.service`: Neo4j-backed HTTP service (`uvicorn qbaf_backend.service:create_app --factory`).
+- `qbaf_backend.config` / `repository`: configuration + persistence helpers for Neo4j.
 - `qbaf_mcp_server.tools`: maps tool names to backend calls and shared error handling.
 
 ## Backend Contracts (HTTP)

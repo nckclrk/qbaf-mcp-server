@@ -5,6 +5,7 @@
 2. Implement backend proxy (`backend.py`, `http.py`, `models.py`) with uniform error envelopes.
 3. Register six MCP tools and cover them with unit tests.
 4. Ship Starlette dev backend (`dev_backend.py`) to unblock manual testing.
+5. Provide Neo4j-backed service (`qbaf_backend`) plus Docker startup script.
 
 ## Quality Gates
 - `tox -e py312` for unit tests.
