@@ -178,9 +178,7 @@ async def progress_get(request: Request) -> JSONResponse:
     if not graph_id:
         return _json_error(400, "INVALID_ARGUMENT", "graph_id query parameter is required")
 
-    graph = await registry.get(graph_id)
-    if graph is None:
-        return _json_error(404, "NOT_FOUND", "graph not found")
+    graph = await registry.get_or_create(graph_id)
 
     payload = ProgressRequest(ingest_job_id=request.query_params.get("job_id"))
     response = await graph.progress(graph_id, payload)

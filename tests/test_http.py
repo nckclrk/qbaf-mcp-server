@@ -70,9 +70,20 @@ async def test_backend_health_check_error_on_server_error() -> None:
 
 
 @pytest.mark.asyncio
-async def test_backend_health_check_error_on_client_error() -> None:
+async def test_backend_health_check_allows_not_found() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(404)
+
+    transport = httpx.MockTransport(handler)
+
+    async with httpx.AsyncClient(transport=transport, base_url="https://backend.local") as client:
+        await backend_health_check(client, "g_123")
+
+
+@pytest.mark.asyncio
+async def test_backend_health_check_error_on_other_client_error() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(401)
 
     transport = httpx.MockTransport(handler)
 

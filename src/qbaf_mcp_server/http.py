@@ -38,6 +38,9 @@ async def backend_health_check(client: httpx.AsyncClient, graph_id: str) -> None
     except httpx.HTTPError as exc:  # pragma: no cover - passthrough for clarity
         raise BackendHealthError("backend unreachable") from exc
 
+    if response.status_code == 404:
+        return
+
     if response.status_code >= 500:
         raise BackendHealthError(
             f"backend unhealthy: status_code={response.status_code}",
