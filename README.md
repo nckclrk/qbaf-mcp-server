@@ -74,3 +74,13 @@ To run the persistent backend:
    PYTHONPATH=src uvicorn qbaf_backend.service:create_app --factory --reload
    ```
    The service listens on `http://127.0.0.1:8000` by default and mirrors the endpoints consumed by the MCP server.
+
+## MCP STDIO Entrypoint
+
+If you need a quiet entry point for tools that communicate with the MCP server over stdio (e.g. Claude Desktop), use:
+
+```bash
+./scripts/run_mcp_server.sh
+```
+
+The script activates the `.venv` virtual environment (if not already active), exports `PYTHONPATH=src`, and execs `python -m qbaf_mcp_server.server` without printing anything else. Ensure a backend is reachable at the `BACKEND_BASE_URL` defined in your `.env` (the helper above can run the dev backend when needed).
